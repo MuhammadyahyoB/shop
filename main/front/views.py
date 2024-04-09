@@ -5,47 +5,36 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django import template
 
-# def index(request):
-#     categories = models.Category.objects.all()
-#     products = []
-#     reviews = models.Review.objects.all()
-#     wishlist = models.WishList.objects.filter(user=request.user)
-#     if request.user.is_authenticated:
-#         for i in models.Product.objects.all():
-#             if models.WishList.objects.filter(product=i,user=request.user):
-#                 i.is_like = True
-#             else:
-#                 i.is_like = False
-#             products.append(i)
-#     else:
-#         products = models.Product.objects.all()
+register = template.Library()
+def index(request):
+    categories = models.Category.objects.all()
+    products = []
+    reviews = models.Review.objects.all()
+    if request.user.is_authenticated:
+        for i in models.Product.objects.all():
+            if models.WishList.objects.filter(product=i,user=request.user):
+                i.is_like = True
+            else:
+                i.is_like = False
+            products.append(i)
+    else:
+        products = models.Product.objects.all()
 
     
-#     mark = 0
-#     for i in reviews:
-#         mark += i.mark
+    mark = 0
+    for i in reviews:
+        mark += i.mark
     
-#     mark = int(mark/len(reviews)) if reviews else 0
+    mark = int(mark/len(reviews)) if reviews else 0
+    
 
-#     wishlisted_codes = [item.product.code for item in wishlist]
-#     for product in products:
-#         v = product.code in wishlisted_codes
-#         setattr(product, 'is_wishlisted', v)
-
-#     newproduct = products.order_by('-id')[:4]
-#     for new in newproduct:
-#         v = new.code in wishlisted_codes
-#         setattr(new, 'is_wishlisted', v)
-
-#     context = {
-#         'categorys': categories,
-#         'products': paginator_page(products, 8, request),
-#         'wishlist': wishlist,
-#         'testimonal': testimonal,
-#         'newproduct': newproduct,
-
-#         }
-#     return render(request, 'front/index.html',context)
+    context = {
+        'categories':categories,
+        'products':products,
+        'rating':range(1,6),
+        'mark':mark,
+        }
+    return render(request, 'front/index.html',context)
 
 def paginator_page(List, num, request):
     paginator = Paginator(List, num)
@@ -62,35 +51,35 @@ def paginator_page(List, num, request):
 
 
 
-def index(request):
-    categorys = models.Category.objects.all()
-    products = models.Product.objects.all()
-    cart = models.Cart.objects.get_or_create(user=request.user, status=1)
-    wishlist = models.WishList.objects.filter(user=request.user)
-    testimonal = models.Review.objects.filter().order_by('-id')[1:6]
+# def index(request):
+#     categories = models.Category.objects.all()
+#     products = models.Product.objects.all()
+#     cart = models.Cart.objects.get_or_create(user=request.user, status=1)
+#     wishlist = models.WishList.objects.filter(user=request.user)
+#     testimonal = models.Review.objects.filter().order_by('-id')[1:6]
 
-    wishlisted_codes = [item.product.code for item in wishlist]
-    for product in products:
-        v = product.code in wishlisted_codes
-        setattr(product, 'is_wishlisted', v)
+#     wishlisted_codes = [item.product.code for item in wishlist]
+#     for product in products:
+#         v = product.code in wishlisted_codes
+#         setattr(product, 'is_wishlisted', v)
 
-    newproduct = products.order_by('-id')[:4]
-    for new in newproduct:
-        v = new.code in wishlisted_codes
-        setattr(new, 'is_wishlisted', v)
+#     newproduct = products.order_by('-id')[:4]
+#     for new in newproduct:
+#         news = new.code in wishlisted_codes
+#         setattr(new, 'is_wishlisted', news)
 
-    context = {
-        'categorys': categorys,
-        'products': paginator_page(products, 8, request),
-        'wishlist': wishlist,
-        'cart': cart,
-        'testimonal': testimonal,
-        'newproducts': newproduct,
-        'range':range(5)
+#     context = {
+#         'categorys': categories,
+#         'products': paginator_page(products, 8, request),
+#         'wishlist': wishlist,
+#         'cart': cart,
+#         'testimonal': testimonal,
+#         'newproducts': newproduct,
+#         'range':range(5)
 
-    }
+#     }
 
-    return render(request, 'front/index.html', context)
+#     return render(request, 'front/index.html', context)
 
 
 def product_detail(request,code):

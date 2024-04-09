@@ -141,7 +141,7 @@
                                             <ul class="drop-menu">
                                                 {% for category in categories %}
                                                 <li>
-                                                    <a href="{% url 'front:product_list' category.code %}">{{category.name}}</a>
+                                                    <a href="{% url 'front:category_list' category.code %}">{{category.name}}</a>
                                                 </li>                                                  
                                                 {% endfor %}
                                             </ul>
@@ -149,6 +149,9 @@
                                         {% if user.is_authenticated %}
                                         <li class="drop-holder ">
                                             <a href="{% url 'dashboard:index' %}">Boshqaruv paneli</a>
+                                        </li>
+                                        <li class="drop-holder">
+                                            <a href="{% url 'front:product_list' %}">Maxsulotlar</a>
                                         </li>
                                         <li class="drop-holder ">
                                             <a href="{% url 'front:order_list' %}">Buyurtmalar</a>
